@@ -63,7 +63,7 @@ class TimetableNotification extends Command
                 ];
         }
 
-        Mail::to('example@example.com')->send(new Timetable($items, $startOfWeek->locale('et')->translatedFormat('d. F Y'), $endOfWeek->locale('et')->translatedFormat('d. F Y')));
+        Mail::to(config('mail.notification.email'))->send(new Timetable($items, $startOfWeek->locale('et')->translatedFormat('d. F Y'), $endOfWeek->locale('et')->translatedFormat('d. F Y')));
 
         foreach ($items as $day => $lessons) {
             $this->info($day);
