@@ -3,12 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Mail\Timetable;
+use App\Notifications\TimetableDiscordNotification;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
-
 
 class TimetableNotification extends Command
 {
@@ -65,6 +65,14 @@ class TimetableNotification extends Command
 
         Mail::to(config('mail.notification.email'))->send(new Timetable($items, $startOfWeek->locale('et')->translatedFormat('d. F Y'), $endOfWeek->locale('et')->translatedFormat('d. F Y')));
 
+        // Send Discord notification
+        $user = \App\Models\User::first();
+        $user->notify(new TimetableDiscordNotification(
+            $items,
+            $startOfWeek->locale('et')->translatedFormat('d. F Y'),
+            $endOfWeek->locale('et')->translatedFormat('d. F Y')
+        ));
+
         foreach ($items as $day => $lessons) {
             $this->info($day);
             $this->table(
@@ -73,4 +81,5 @@ class TimetableNotification extends Command
             );
         }
     }
+    
 }

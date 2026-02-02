@@ -40,5 +40,6 @@ Route::get('/mailable', function () {
         ];
     }
 
+
     return new Timetable($items);
 });
